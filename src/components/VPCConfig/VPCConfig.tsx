@@ -1,5 +1,5 @@
 import { Form, Input, Button } from 'antd';
-import { CIDR } from '../../features';
+import { CIDR, CIDRRegex, VpcManager } from '../../features';
 
 import styles from './VPCConfig.module.scss';
 
@@ -9,7 +9,7 @@ interface Props {
   vpcCidr?: CIDR,
   vpcName?: string,
   readOnly?: boolean
-  onChange?: (cidr: CIDR, name: string) => void,
+  onChange?: () => void,
 }
 
 interface FormData {
@@ -17,18 +17,22 @@ interface FormData {
   name: string,
 }
 
+const vpcManager = VpcManager.getInstance();
+
 export function VPCConfig({
   vpcCidr,
   vpcName,
   readOnly = false,
   onChange,
 }: Props) {
-  const [form] = useForm();
+  const [form] = useForm<FormData>();
 
   const handleSubmit = (val: FormData) => {
     try {
       const cidr = CIDR.fromString(val.cidr);
-      if (onChange) onChange(cidr, val.name);
+      vpcManager.setCIDR(cidr);
+      vpcManager.setName(val.name);
+      if (onChange) onChange();
     } catch (e) {
       alert(e);
     }
@@ -51,7 +55,7 @@ export function VPCConfig({
           name="cidr"
           rules={[
             { required: true, message: 'Enter the VPC CIDR' },
-            { pattern: /^([0-9]{1,3}\.){3}[0-9]{1,3}\/([0-9]|[1-2][0-9]|3[0-2])$/igm, message: 'Enter a valid CIDR' }
+            { pattern: CIDRRegex, message: 'Enter a valid CIDR' }
           ]}
         >
           <Input readOnly={readOnly} placeholder="VPC CIDR (10.0.0.0/16)" />

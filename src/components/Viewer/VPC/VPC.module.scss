@@ -1,0 +1,23 @@
+@import 'src/styles/var';
+
+$height: 40px;
+
+.vpc {
+  background-color: $primary-color;
+  border-radius: 5px;
+  height: $height;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+
+  .cidr {
+    color: white;
+    font-weight: bold;
+    line-height: $height;
+  }
+}
+
+.netDescriptions table {
+  width: unset !important;
+  margin: auto;
+}

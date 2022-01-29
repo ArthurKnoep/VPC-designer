@@ -1,11 +1,19 @@
 import { CIDR } from './cidr';
 
+let vpcManager: VpcManager | undefined = undefined;
+
 export class VpcManager {
   private cidr?: CIDR;
   private name: string;
 
-  constructor() {
+  private constructor() {
     this.name = '';
+  }
+
+  static getInstance(): VpcManager {
+    if (vpcManager) return vpcManager;
+    vpcManager = new VpcManager();
+    return vpcManager;
   }
 
   setCIDR(cidr: CIDR) {
@@ -16,5 +24,12 @@ export class VpcManager {
     this.name = name;
   }
 
+  getCIDR(): CIDR {
+    if (!this.cidr) throw new Error('CIDR not yet set');
+    return this.cidr;
+  }
 
+  getName(): string {
+    return this.name;
+  }
 }
