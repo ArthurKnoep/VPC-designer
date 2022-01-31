@@ -9,6 +9,7 @@ interface Props {
 
 interface FormData {
   subNetCIDR: string,
+  name?: string,
 }
 
 const vpcManager = VpcManager.getInstance();
@@ -19,22 +20,21 @@ export function VPC({ onCreateSubNet }: Props) {
   const handleSubNetCreation = async (val: FormData) => {
     try {
       const subNetCidr = CIDR.fromString(val.subNetCIDR);
-      if (!vpcManager.getCIDR().isASubNet(subNetCidr)) {
-        message.error({ content: `${val.subNetCIDR} is not a valid subnet in the VPC` });
-        return;
-      }
+      vpcManager.addSubNet(subNetCidr, val.name);
       if (onCreateSubNet) onCreateSubNet(subNetCidr);
       form.resetFields();
-    } catch (e) {}
+    } catch (err: any) {
+        message.error({ content: err.toString() });
+    }
   };
 
   const popover = (
     <>
       <Descriptions size="small" column={1} className={styles.netDescriptions}>
         <Descriptions.Item label="Usage">N/A%</Descriptions.Item>
-        <Descriptions.Item label="First address">N/A</Descriptions.Item>
-        <Descriptions.Item label="Last address">N/A</Descriptions.Item>
-        <Descriptions.Item label="Usable address">N/A</Descriptions.Item>
+        <Descriptions.Item label="First address">{vpcManager.getCIDR().firstAddress.toString()}</Descriptions.Item>
+        <Descriptions.Item label="Last address">{vpcManager.getCIDR().lastAddress.toString()}</Descriptions.Item>
+        <Descriptions.Item label="Usable address">{vpcManager.getCIDR().addressCount}</Descriptions.Item>
       </Descriptions>
       <Divider />
       <Form onFinish={handleSubNetCreation} form={form}>

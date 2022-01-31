@@ -13,6 +13,17 @@ export class IP {
     return new IP(ip[0], ip[1], ip[2], ip[3]);
   }
 
+  static fromBitValue(value: number) {
+    function createByteMask(position: number) {
+      return (
+        new Array(32).fill(0).reduce((acc, _, idx) => (
+          (acc << 1) | ((Math.floor(idx / 8) === position) ? 1 : 0)
+        ), 0)
+      ) >>> 0;
+    }
+    return new IP((value & createByteMask(0)) >> 24, (value & createByteMask(1)) >> 16, (value & createByteMask(2)) >> 8, value & createByteMask(3));
+  }
+
   toString(): string {
     const ipToStr = [
       (this.ip & (0xff << 24)) >>> 24,

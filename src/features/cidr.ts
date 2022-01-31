@@ -38,9 +38,21 @@ export class CIDR {
     ) >>> 0;
   }
 
-  isASubNet(subNet: CIDR): boolean {
-    if (this.mask >= subNet.mask) return false;
-    const bitMask = this.maskToBitMask();
+  get addressCount(): number {
+    return Math.pow(2, 32 - this.mask);
+  }
+
+  get firstAddress(): IP {
+    return IP.fromBitValue(this.ip.getIP() & this.maskToBitMask());
+  }
+
+  get lastAddress(): IP {
+    return IP.fromBitValue(this.ip.getIP() | ~this.maskToBitMask());
+  }
+
+  isASubNetOf(subNet: CIDR): boolean {
+    if (subNet.mask >= this.mask) return false;
+    const bitMask = subNet.maskToBitMask();
     return (this.ip.getIP() & bitMask) === (subNet.ip.getIP() & bitMask);
   }
 }

@@ -2,12 +2,19 @@ import { CIDR } from './cidr';
 
 let vpcManager: VpcManager | undefined = undefined;
 
+export interface SubNet {
+  name?: string,
+  cidr: CIDR,
+}
+
 export class VpcManager {
-  private cidr?: CIDR;
+  private vpcCidr?: CIDR;
   private name: string;
+  private readonly subNets: SubNet[];
 
   private constructor() {
     this.name = '';
+    this.subNets = [];
   }
 
   static getInstance(): VpcManager {
@@ -17,7 +24,7 @@ export class VpcManager {
   }
 
   setCIDR(cidr: CIDR) {
-    this.cidr = cidr;
+    this.vpcCidr = cidr;
   }
 
   setName(name: string) {
@@ -25,11 +32,24 @@ export class VpcManager {
   }
 
   getCIDR(): CIDR {
-    if (!this.cidr) throw new Error('CIDR not yet set');
-    return this.cidr;
+    if (!this.vpcCidr) throw new Error('CIDR not yet set');
+    return this.vpcCidr;
   }
 
   getName(): string {
     return this.name;
+  }
+
+  getSubNets(): SubNet[] {
+    return this.subNets;
+  }
+
+  addSubNet(cidr: CIDR, name?: string) {
+    if (!this.vpcCidr) throw new Error('CIDR not yet set');
+    if (!cidr.isASubNetOf(this.vpcCidr)) throw new Error(`${cidr.toString()} is not a valid subnet of ${this.vpcCidr.toString()}`)
+    this.subNets.push({
+      cidr,
+      name,
+    });
   }
 }
