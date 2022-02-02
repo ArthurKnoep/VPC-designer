@@ -44,6 +44,13 @@ export class VpcManager {
     return this.subNets;
   }
 
+  usagePercent(): number {
+    if (!this.vpcCidr) throw new Error('CIDR not yet set');
+    const totalIPCount = this.vpcCidr.addressCount;
+    const subNetsIPCountSum = this.subNets.reduce((acc, subNet) => acc + subNet.cidr.addressCount, 0);
+    return (subNetsIPCountSum / totalIPCount) ?? 0;
+  }
+
   addSubNet(cidr: CIDR, name?: string) {
     if (!this.vpcCidr) throw new Error('CIDR not yet set');
     if (!cidr.isASubNetOf(this.vpcCidr)) throw new Error(`${cidr.toString()} is not a valid subnet of ${this.vpcCidr.toString()}`)

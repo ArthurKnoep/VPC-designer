@@ -1,4 +1,5 @@
 import { SubNet, VpcManager } from '../../../features';
+import styles from './SubNets.module.scss';
 
 const vpcManager = VpcManager.getInstance();
 
@@ -8,10 +9,23 @@ interface Props {
 
 export function SubNets({ subNets }: Props) {
   return (
-    <>
-      {subNets.map((subNet) => (
-          <div key={subNet.cidr.toString()}>hello / {subNet.cidr.toString()} / {subNet.cidr.addressCount.toString()}</div>
-      ))}
-    </>
+    <div className={styles.container}>
+      {subNets.map((subNet) => {
+        const startPercentage = vpcManager.getCIDR().ipPosition(subNet.cidr.firstAddress);
+        const endPercentage = vpcManager.getCIDR().ipPosition(subNet.cidr.lastAddress);
+        return (
+          <div
+            key={subNet.cidr.toString()}
+            className={styles.subNet}
+            style={{
+              left: `${startPercentage * 100}%`,
+              width: `${(endPercentage - startPercentage) * 100}%`,
+            }}
+          >
+            {subNet.cidr.toString()}
+          </div>
+        );
+      })}
+    </div>
   );
 }

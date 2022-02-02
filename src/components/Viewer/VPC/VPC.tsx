@@ -31,7 +31,7 @@ export function VPC({ onCreateSubNet }: Props) {
   const popover = (
     <>
       <Descriptions size="small" column={1} className={styles.netDescriptions}>
-        <Descriptions.Item label="Usage">N/A%</Descriptions.Item>
+        <Descriptions.Item label="Usage">{vpcManager.usagePercent() * 100}%</Descriptions.Item>
         <Descriptions.Item label="First address">{vpcManager.getCIDR().firstAddress.toString()}</Descriptions.Item>
         <Descriptions.Item label="Last address">{vpcManager.getCIDR().lastAddress.toString()}</Descriptions.Item>
         <Descriptions.Item label="Usable address">{vpcManager.getCIDR().addressCount}</Descriptions.Item>

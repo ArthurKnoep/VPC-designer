@@ -1,0 +1,11 @@
+.container {
+  position: relative;
+  width: 100%;
+
+  .subNet {
+    position: absolute;
+    border-radius: 5px;
+    background-color: #58c158;
+    height: 40px;
+  }
+}

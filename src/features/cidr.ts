@@ -38,6 +38,11 @@ export class CIDR {
     ) >>> 0;
   }
 
+  ipPosition(ip: IP): number {
+    if (!this.isIn(ip)) throw new Error('IP is not in the CIDR range');
+    return (ip.getIP() & ~this.maskToBitMask()) / ~this.maskToBitMask();
+  }
+
   get addressCount(): number {
     return Math.pow(2, 32 - this.mask);
   }
@@ -54,5 +59,10 @@ export class CIDR {
     if (subNet.mask >= this.mask) return false;
     const bitMask = subNet.maskToBitMask();
     return (this.ip.getIP() & bitMask) === (subNet.ip.getIP() & bitMask);
+  }
+
+  isIn(ip: IP): boolean {
+    const maskBit = this.maskToBitMask();
+    return (this.ip.getIP() & maskBit) === (ip.getIP() & maskBit);
   }
 }
