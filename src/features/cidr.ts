@@ -28,7 +28,7 @@ export class CIDR {
   }
 
   toString(): string {
-    return `${this.ip.toString()}/${this.mask}`;
+    return `${this.firstAddress.toString()}/${this.mask}`;
   }
 
   private maskToBitMask() {
